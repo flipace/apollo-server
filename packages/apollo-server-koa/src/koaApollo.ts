@@ -12,7 +12,7 @@ export interface KoaGraphQLOptionsFunction {
 }
 
 export interface KoaHandler {
-  (req: any, next): void;
+  (req: any, next?): void;
 }
 
 export function graphqlKoa(
@@ -28,7 +28,7 @@ export function graphqlKoa(
     );
   }
 
-  const graphqlHandler = (ctx: koa.Context): Promise<void> => {
+  const graphqlHandler = (ctx: koa.Context, next): Promise<void> => {
     return runHttpQuery([ctx], {
       method: ctx.request.method,
       options: options,
@@ -37,8 +37,12 @@ export function graphqlKoa(
       request: convertNodeHttpToRequest(ctx.req),
     }).then(
       gqlResponse => {
+        console.log('done');
+        ctx.status = 201;
         ctx.set('Content-Type', 'application/json');
+        ctx.status = 200;
         ctx.body = gqlResponse;
+        console.log('sat body');
       },
       (error: HttpQueryError) => {
         if ('HttpQueryError' !== error.name) {

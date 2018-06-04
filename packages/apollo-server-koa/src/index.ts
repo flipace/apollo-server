@@ -5,3 +5,5 @@ export {
   graphqlKoa,
   graphiqlKoa,
 } from './koaApollo';
+
+export { registerServer } from './ApolloServer';
